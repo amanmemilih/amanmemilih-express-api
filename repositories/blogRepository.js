@@ -1,10 +1,15 @@
 const Blog = require('../models/Blog');
+const BlogAdmin = require('../models/BlogAdmin');
 
 const findAllBlogs = async () => {
   return await Blog.findAll({ include: ['admin'] });
 };
 
 const createBlog = async (blogData) => {
+  const adminExists = await BlogAdmin.findByPk(blogData.admin_id);
+  if (!adminExists) {
+    throw new Error('Invalid admin_id. No matching BlogAdmin found.');
+  }
   return await Blog.create(blogData);
 };
 
